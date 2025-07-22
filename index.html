@@ -25,22 +25,23 @@
       @keyframes popIn { 0%{transform:scale(0.93);} 100%{transform:scale(1);} }
       .logo-box {
         position: absolute;
-        top: 18px; left: 24px;
-        width: 68px; height: 68px;
+        top: 8px; left: 14px;
+        width: 120px; height: 120px;
         display: flex;
         align-items: flex-start;
         background: none;
         z-index: 10;
       }
       .logo-box img{
-        width: 64px; height: 64px;
-        border-radius: 10px;
-        box-shadow:0 2px 10px #b8c8e255;
+        width: 100px;  /* Taille agrandie */
+        height: 100px;
+        border-radius: 14px;
+        box-shadow:0 2px 12px #b8c8e255;
         object-fit: contain;
         background: #fff;
       }
       .quiz-title {
-        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:14px;
+        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:20px;
       }
       .progress { height:7px;width:90%;background:#e9ecf6;border-radius:5px; margin:15px auto 18px auto;overflow:hidden;}
       .progress-bar { height:7px;background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);width:0;border-radius:5px;transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);}
@@ -59,7 +60,11 @@
       .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#ffdd55,#ff6600,#39f);animation:spark-move 1.2s linear forwards;}
       @keyframes spark-move{to{transform:translateY(-320px) translateX(var(--tx,40px));opacity:0;}}
       #retryBtn{margin: 22px auto 0 auto;background:linear-gradient(90deg,#34e194 10%,#3582e8 80%);max-width:200px;display:block;}
-      @media(max-width:650px){.quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw;margin-top: 76px;}.logo-box{top:5px;left:7px;}.logo-box img{width:44px;height:44px;}}
+      @media(max-width:650px){
+        .quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw;margin-top: 76px;}
+        .logo-box{top:3px;left:7px;width:70px;height:70px;}
+        .logo-box img{width:55px;height:55px;}
+      }
     </style>
 </head>
 <body>
@@ -82,24 +87,82 @@
     </div>
 </div>
 <script>
-const questions = [
-    {question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"],answer: 2},
-    {question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?",choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"],answer: 2},
-    {question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?",choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"],answer: 2},
-    {question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :",choices: ["A) Compter uniquement les jours ouvrables du lundi au vendredi","B) Compter les jours ouvrés avec des week-ends personnalisés","C) Compter les jours de congé uniquement","D) Compter les jours fériés selon un pays"],answer:1},
-    {question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?",choices: ["A) =$A1=\"URGENT\"","B) =A1=\"URGENT\"","C) =$A$1=\"URGENT\"","D) =SI(A1=\"URGENT\")"],answer:0},
-    {question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?",choices: ["A) Donne la valeur de la cellule B2","B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3","C) Renvoie une cellule vide","D) Crée une adresse mail"],answer:1},
-    {question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?",choices: ["A) CONCATENER","B) STXT","C) JOINDRE.TEXTE","D) TEXTE"],answer:2}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+const questionsOrig = [
+    {
+      question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",
+      choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"], answer: 2
+    },
+    {
+      question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?",
+      choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"], answer: 2
+    },
+    {
+      question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?",
+      choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"], answer: 2
+    },
+    {
+      question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :",
+      choices: [
+        "A) Compter uniquement les jours ouvrables du lundi au vendredi",
+        "B) Compter les jours ouvrés avec des week-ends personnalisés",
+        "C) Compter les jours de congé uniquement",
+        "D) Compter les jours fériés selon un pays"
+      ], answer: 1
+    },
+    {
+      question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?",
+      choices: [
+        "A) =$A1=\"URGENT\"",
+        "B) =A1=\"URGENT\"",
+        "C) =$A$1=\"URGENT\"",
+        "D) =SI(A1=\"URGENT\")"
+      ], answer: 0
+    },
+    {
+      question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?",
+      choices: [
+        "A) Donne la valeur de la cellule B2",
+        "B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3",
+        "C) Renvoie une cellule vide",
+        "D) Crée une adresse mail"
+      ], answer: 1
+    },
+    {
+      question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?",
+      choices: [
+        "A) CONCATENER",
+        "B) STXT",
+        "C) JOINDRE.TEXTE",
+        "D) TEXTE"
+      ], answer: 2
+    }
 ];
+let questions;
 let currentQuestion = 0;
-let userChoices = Array(questions.length).fill(null);
+let userChoices = [];
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const nextBtn = document.getElementById("nextBtn");
 const prevBtn = document.getElementById("prevBtn");
 const scoreEl = document.getElementById("score");
 const progressBar = document.getElementById("progressBar");
-function updateProgress() {progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";}
+
+function shuffleQuestionsChoices() {
+    // clone les questions pour un nouvel ordre/mélange propre à chaque jeu
+    questions = questionsOrig.map(q => {
+      let qCopy = {question: q.question, choices: [...q.choices], answer: q.answer};
+      const correctText = qCopy.choices[qCopy.answer];
+      shuffleArray(qCopy.choices);
+      qCopy.answer = qCopy.choices.indexOf(correctText);
+      return qCopy;
+    });
+}
 function emojiForScore(rate) {
     if (rate === 1) return "🎉";
     if (rate >= 0.85) return "👏";
@@ -132,6 +195,7 @@ function showFireworks() {
     let loops = 0;
     const fireworksInterval = setInterval(() => {createSparks();loops++;if(loops>=4){clearInterval(fireworksInterval);setTimeout(()=>{let c=document.getElementById("fireworks-container");if(c) c.parentNode.removeChild(c);},1400);}}, 1000);
 }
+function updateProgress() {progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";}
 function loadQuestion() {
     nextBtn.disabled = userChoices[currentQuestion] === null;
     prevBtn.disabled = currentQuestion === 0;
@@ -145,8 +209,8 @@ function loadQuestion() {
         btn.className = "choice";
         if(userChoices[currentQuestion] !== null){
             btn.classList.add('selected');
-            if (i === questions[currentQuestion].answer) btn.classList.add('correct');
-            if (i !== questions[currentQuestion].answer && i === userChoices[currentQuestion]) btn.classList.add('incorrect');
+            if (i === q.answer) btn.classList.add('correct');
+            if (i !== q.answer && i === userChoices[currentQuestion]) btn.classList.add('incorrect');
         }
         btn.onclick = function() {
             document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected','incorrect','correct'));
@@ -187,6 +251,7 @@ function endQuiz() {
         retryBtn.textContent = "Recommencer le quiz";
         retryBtn.id = "retryBtn";
         retryBtn.onclick = function() {
+            shuffleQuestionsChoices();
             userChoices = Array(questions.length).fill(null);
             currentQuestion = 0;
             loadQuestion();
@@ -197,6 +262,8 @@ function endQuiz() {
 }
 nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return;if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
 prevBtn.addEventListener('click', () => {if (currentQuestion > 0) {currentQuestion--;loadQuestion();}});
+shuffleQuestionsChoices(); // Mélange à chaque chargement initial
+userChoices = Array(questions.length).fill(null);
 loadQuestion();
 </script>
 </body>
