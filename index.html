@@ -11,23 +11,6 @@
         font-family:'Segoe UI',Arial,sans-serif;
         min-height:100vh;
       }
-      .header-logo {
-        position: absolute;
-        top: 22px;
-        left: 30px;
-        z-index: 20;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .header-logo img {
-        width: 70px;
-        height: 70px;
-        border-radius: 12px;
-        box-shadow:0 2px 10px #b8c8e255;
-        background: #fff;
-        object-fit: contain;
-      }
       .quiz-container {
         background: #fff;
         max-width: 440px;
@@ -39,112 +22,51 @@
         position: relative;
         animation:popIn 0.7s;
       }
-      @keyframes popIn {
-        0% {transform:scale(0.93);}
-        100%{transform:scale(1);}
+      @keyframes popIn { 0%{transform:scale(0.93);} 100%{transform:scale(1);} }
+      .logo-box {
+        position: absolute;
+        top: 18px; left: 24px;
+        width: 68px; height: 68px;
+        display: flex;
+        align-items: flex-start;
+        background: none;
+        z-index: 10;
+      }
+      .logo-box img{
+        width: 64px; height: 64px;
+        border-radius: 10px;
+        box-shadow:0 2px 10px #b8c8e255;
+        object-fit: contain;
+        background: #fff;
       }
       .quiz-title {
-        font-size:1.45rem;
-        color:#4566af;
-        margin-bottom:10px;
+        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:14px;
       }
-      .progress {
-        height: 7px; width: 90%;
-        background: #e9ecf6;
-        border-radius:5px;
-        margin:15px auto 18px auto;overflow:hidden;
-      }
-      .progress-bar {
-        height:7px;
-        background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);
-        width:0;
-        border-radius:5px;
-        transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);
-      }
-      .question {
-        font-weight:bold;
-        color:#1c3658;
-        margin-bottom:24px;
-        font-size:1.10rem;
-      }
-      .choice {
-        background: #f6f9fd;
-        border:2px solid #dfecfa;
-        border-radius:10px;
-        padding: 13px 12px;
-        margin:8px 0;
-        font-size:1rem;
-        cursor:pointer;
-        text-align:left;
-        transition: background .3s, border .2s;
-        outline:none;
-        display:block; width:100%; font-family: inherit;
-      }
-      .choice.selected, .choice:hover {
-        border:2.5px solid #3993db;
-        background:#f1faff;
-      }
-      .choice.correct {background:#daf6de; border-color:#32b872;color:#227946;}
+      .progress { height:7px;width:90%;background:#e9ecf6;border-radius:5px; margin:15px auto 18px auto;overflow:hidden;}
+      .progress-bar { height:7px;background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);width:0;border-radius:5px;transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);}
+      .question { font-weight:bold;color:#1c3658;margin-bottom:24px;font-size:1.10rem;}
+      .choice{background: #f6f9fd;border:2px solid #dfecfa;border-radius:10px;padding: 13px 12px;margin:8px 0;font-size:1rem;cursor:pointer;text-align:left;transition: background .3s, border .2s;outline:none;display:block;width:100%;font-family: inherit;}
+      .choice.selected, .choice:hover{border:2.5px solid #3993db;background:#f1faff;}
+      .choice.correct{background:#daf6de;border-color:#32b872;color:#227946;}
       .choice.incorrect{background:#ffe4e4;border-color:#f24843;color:#a42423;}
-      .button-group {
-        display:flex;justify-content:space-between;gap:10px;margin-top:10px;margin-bottom:-8px;
-      }
-      #prevBtn,#nextBtn, #retryBtn {
-        flex:1 1 0;
-        padding:10px 0;
-        background:linear-gradient(90deg,#86e8b2 20%,#3993db 70%);
-        color:#fff;
-        font-weight:bold;
-        font-size:1rem;
-        border:none;
-        border-radius:8px;
-        cursor:pointer;
-        transition: background 0.25s;
-        box-shadow:0 2px 8px #e0eafc55;
-      }
-      #prevBtn {background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
+      .button-group {display:flex;justify-content:space-between;gap:10px;margin-top:10px;margin-bottom:-8px;}
+      #prevBtn,#nextBtn,#retryBtn{flex:1 1 0;padding:10px 0;background:linear-gradient(90deg,#86e8b2 20%,#3993db 70%);color:#fff;font-weight:bold;font-size:1rem;border:none;border-radius:8px;cursor:pointer;transition: background 0.25s;box-shadow:0 2px 8px #e0eafc55;}
+      #prevBtn{background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
       #nextBtn:disabled,#prevBtn:disabled,#retryBtn:disabled{opacity:.6;cursor:not-allowed;}
-      #score {
-        font-size:1.3rem; font-weight:600; color:#227946;
-        margin-top:30px;display:flex;align-items:center;justify-content:center;gap:14px;
-      }
-      .score-emoji {font-size:2.3rem;}
-      #fireworks-container {
-        position: fixed;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        pointer-events: none; z-index: 9999;
-      }
-      .spark {
-        position: absolute;
-        width: 6px; height: 6px;
-        border-radius:50%;
-        background:radial-gradient(circle,#ffdd55,#ff6600,#39f);
-        animation:spark-move 1.2s linear forwards;
-      }
-      @keyframes spark-move {
-        to {
-          transform:translateY(-320px) translateX(var(--tx,40px));
-          opacity:0;
-        }
-      }
-      #retryBtn {
-        margin: 22px auto 0 auto;
-        background:linear-gradient(90deg,#34e194 10%,#3582e8 80%);
-        max-width:200px;
-        display:block;
-      }
-      @media(max-width:650px){
-        .header-logo {left:8px;top:8px;}
-        .quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw; margin-top: 76px;}
-        .header-logo img{width:50px;height:50px;}
-      }
+      #score{font-size:1.3rem;font-weight:600;color:#227946;margin-top:30px;display:flex;align-items:center;justify-content:center;gap:14px;}
+      .score-emoji{font-size:2.3rem;}
+      #fireworks-container{position: fixed;top: 0; left: 0; width: 100vw; height: 100vh;pointer-events: none; z-index: 9999;}
+      .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#ffdd55,#ff6600,#39f);animation:spark-move 1.2s linear forwards;}
+      @keyframes spark-move{to{transform:translateY(-320px) translateX(var(--tx,40px));opacity:0;}}
+      #retryBtn{margin: 22px auto 0 auto;background:linear-gradient(90deg,#34e194 10%,#3582e8 80%);max-width:200px;display:block;}
+      @media(max-width:650px){.quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw;margin-top: 76px;}.logo-box{top:5px;left:7px;}.logo-box img{width:44px;height:44px;}}
     </style>
 </head>
 <body>
-<div class="header-logo">
-  <img src="https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/57920506/b2a8de4e-78ec-43db-98fb-2e5897d66133/HB.png" alt="HB Artisan Data" />
-</div>
 <div class="quiz-container">
+    <div class="logo-box">
+        <img src="HB.png" alt="HB Artisan Data" />
+    </div>
     <div class="quiz-title">Quiz sur les Fonctions Excel</div>
     <div class="progress">
        <div class="progress-bar" id="progressBar"></div>
@@ -161,76 +83,23 @@
 </div>
 <script>
 const questions = [
-    {
-        question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",
-        choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"],
-        answer: 2
-    },
-    {
-        question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?",
-        choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"],
-        answer: 2
-    },
-    {
-        question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?",
-        choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"],
-        answer: 2
-    },
-    {
-        question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :",
-        choices: [
-            "A) Compter uniquement les jours ouvrables du lundi au vendredi",
-            "B) Compter les jours ouvrés avec des week-ends personnalisés",
-            "C) Compter les jours de congé uniquement",
-            "D) Compter les jours fériés selon un pays"
-        ],
-        answer: 1
-    },
-    {
-        question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?",
-        choices: [
-            "A) =$A1=\"URGENT\"",
-            "B) =A1=\"URGENT\"",
-            "C) =$A$1=\"URGENT\"",
-            "D) =SI(A1=\"URGENT\")"
-        ],
-        answer: 0
-    },
-    {
-        question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?",
-        choices: [
-            "A) Donne la valeur de la cellule B2",
-            "B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3",
-            "C) Renvoie une cellule vide",
-            "D) Crée une adresse mail"
-        ],
-        answer: 1
-    },
-    {
-        question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?",
-        choices: [
-            "A) CONCATENER",
-            "B) STXT",
-            "C) JOINDRE.TEXTE",
-            "D) TEXTE"
-        ],
-        answer: 2
-    }
+    {question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"],answer: 2},
+    {question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?",choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"],answer: 2},
+    {question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?",choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"],answer: 2},
+    {question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :",choices: ["A) Compter uniquement les jours ouvrables du lundi au vendredi","B) Compter les jours ouvrés avec des week-ends personnalisés","C) Compter les jours de congé uniquement","D) Compter les jours fériés selon un pays"],answer:1},
+    {question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?",choices: ["A) =$A1=\"URGENT\"","B) =A1=\"URGENT\"","C) =$A$1=\"URGENT\"","D) =SI(A1=\"URGENT\")"],answer:0},
+    {question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?",choices: ["A) Donne la valeur de la cellule B2","B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3","C) Renvoie une cellule vide","D) Crée une adresse mail"],answer:1},
+    {question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?",choices: ["A) CONCATENER","B) STXT","C) JOINDRE.TEXTE","D) TEXTE"],answer:2}
 ];
-
 let currentQuestion = 0;
 let userChoices = Array(questions.length).fill(null);
-
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const nextBtn = document.getElementById("nextBtn");
 const prevBtn = document.getElementById("prevBtn");
 const scoreEl = document.getElementById("score");
 const progressBar = document.getElementById("progressBar");
-
-function updateProgress() {
-    progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";
-}
+function updateProgress() {progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";}
 function emojiForScore(rate) {
     if (rate === 1) return "🎉";
     if (rate >= 0.85) return "👏";
@@ -257,25 +126,12 @@ function showFireworks() {
           spark.style.setProperty('--tx', `${Math.cos(angle)*radius}px`);
           spark.style.animationDuration = (.7+.6*Math.random())+'s';
           container.appendChild(spark);
-          setTimeout(() => {
-              if(container.contains(spark)) container.removeChild(spark);
-          }, 1400);
+          setTimeout(() => {if(container.contains(spark)) container.removeChild(spark);}, 1400);
       }
     }
     let loops = 0;
-    const fireworksInterval = setInterval(() => {
-      createSparks();
-      loops++;
-      if(loops>=4){
-        clearInterval(fireworksInterval);
-        setTimeout(()=>{
-          let c = document.getElementById("fireworks-container");
-          if (c) c.parentNode.removeChild(c);
-        },1400);
-      }
-    }, 1000);
+    const fireworksInterval = setInterval(() => {createSparks();loops++;if(loops>=4){clearInterval(fireworksInterval);setTimeout(()=>{let c=document.getElementById("fireworks-container");if(c) c.parentNode.removeChild(c);},1400);}}, 1000);
 }
-
 function loadQuestion() {
     nextBtn.disabled = userChoices[currentQuestion] === null;
     prevBtn.disabled = currentQuestion === 0;
@@ -339,21 +195,8 @@ function endQuiz() {
         scoreEl.appendChild(retryBtn);
     }
 }
-nextBtn.addEventListener('click', () => {
-    if(userChoices[currentQuestion] === null) return;
-    if (currentQuestion < questions.length - 1) {
-        currentQuestion++;
-        loadQuestion();
-    } else {
-        endQuiz();
-    }
-});
-prevBtn.addEventListener('click', () => {
-    if (currentQuestion > 0) {
-        currentQuestion--;
-        loadQuestion();
-    }
-});
+nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return;if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
+prevBtn.addEventListener('click', () => {if (currentQuestion > 0) {currentQuestion--;loadQuestion();}});
 loadQuestion();
 </script>
 </body>
