@@ -3,18 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <title>Quiz Interactif Excel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial, sans-serif; padding: 30px; background: #f8f9fa; }
-        .quiz-container { background: #fff; max-width: 500px; margin:auto; padding: 30px 50px; border-radius: 10px; box-shadow: 0 4px 8px #ddd; }
-        .question { font-weight: bold; margin-bottom: 18px; }
-        .choice { display: block; padding: 10px 0; cursor: pointer; margin-bottom: 10px; border: none; background: none; text-align: left; width: 100%; }
-        .choice.selected { background: #e3eefd; }
-        #nextBtn { padding: 10px 20px; margin-top: 10px; }
-        #score { font-size: 18px; font-weight: bold; color: #2e8b57; margin-top:20px; }
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        min-height: 100vh;
+      }
+      .quiz-container {
+        background: #fff;
+        max-width: 440px;
+        margin: 40px auto 0 auto;
+        padding: 35px 30px 30px 30px;
+        border-radius: 20px;
+        box-shadow: 0 12px 32px rgba(122,143,209,0.20);
+        text-align: center;
+        position: relative;
+        animation: popIn 0.7s;
+      }
+      @keyframes popIn {
+        0% {transform:scale(0.93);}
+        100% {transform:scale(1);}
+      }
+      .quiz-header-img {
+        width: 70px;
+        margin-bottom: 10px;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px #d7dbec85;
+      }
+      .quiz-title {
+        font-size: 1.55rem;
+        color: #4566af;
+        margin-bottom: 10px;
+      }
+      .progress {
+        height: 7px;
+        width: 90%;
+        background: #e9ecf6;
+        border-radius: 5px;
+        margin: 15px auto 18px auto;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 7px;
+        background: linear-gradient(90deg,#3993db 50%,#86e8b2 100%);
+        width: 0;
+        border-radius: 5px;
+        transition: width 0.55s cubic-bezier(.68,-0.55,.27,1.55);
+      }
+      .question {
+        font-weight: bold;
+        color: #1c3658;
+        margin-bottom: 24px;
+        font-size: 1.10rem;
+      }
+      .choice {
+        background: #f6f9fd;
+        border: 2px solid #dfecfa;
+        border-radius: 10px;
+        padding: 13px 12px;
+        margin: 8px 0;
+        font-size: 1rem;
+        cursor: pointer;
+        text-align: left;
+        transition: background 0.3s, border 0.2s;
+        outline: none;
+        display: block;
+        width: 100%;
+        font-family: inherit;
+      }
+      .choice.selected, .choice:hover {
+        border: 2.5px solid #3993db;
+        background: #f1faff;
+      }
+      .choice.correct {
+        background: #daf6de;
+        border-color: #32b872;
+        color: #227946;
+      }
+      .choice.incorrect {
+        background: #ffe4e4;
+        border-color: #f24843;
+        color: #a42423;
+      }
+      #nextBtn {
+        padding: 10px 30px;
+        background: linear-gradient(90deg,#3993db 40%,#86e8b2 120%);
+        color: #fff;
+        font-weight: bold;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 16px;
+        transition: background 0.25s;
+        box-shadow: 0 2px 8px #e0eafc85;
+      }
+      #nextBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      #score {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #227946;
+        margin-top: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+      }
+      .score-emoji {
+        font-size: 2.3rem;
+      }
+      @media (max-width: 600px) {
+        .quiz-container {
+          max-width: 97%;
+          padding: 15px 4vw 22px 4vw;
+        }
+        .quiz-header-img {
+          width: 44px;
+        }
+        .quiz-title {
+          font-size: 1.2rem;
+        }
+        #score {
+          font-size: 1.1rem;
+        }
+      }
     </style>
 </head>
 <body>
 <div class="quiz-container">
+    <img src="https://img.icons8.com/color/96/microsoft-excel-2019--v1.png" class="quiz-header-img" alt="Excel Icon">
+    <div class="quiz-title">Quiz sur les Fonctions Excel</div>
+    <div class="progress">
+       <div class="progress-bar" id="progressBar"></div>
+    </div>
     <div id="quiz">
         <div id="question" class="question"></div>
         <div id="choices"></div>
@@ -83,29 +210,50 @@ const questions = [
 
 let currentQuestion = 0;
 let score = 0;
+let answered = false;
 
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const nextBtn = document.getElementById("nextBtn");
 const scoreEl = document.getElementById("score");
+const progressBar = document.getElementById("progressBar");
 
+function updateProgress() {
+    progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";
+}
+function emojiForScore(rate) {
+    if (rate === 1) return "🎉";
+    if (rate >= 0.85) return "👏";
+    if (rate >= 0.65) return "😊";
+    if (rate >= 0.4) return "🙂";
+    return "📚";
+}
 function loadQuestion() {
     nextBtn.disabled = true;
     scoreEl.textContent = "";
     let q = questions[currentQuestion];
     questionEl.textContent = q.question;
     choicesEl.innerHTML = "";
+    answered = false;
     q.choices.forEach((choice, i) => {
         let btn = document.createElement("button");
         btn.textContent = choice;
         btn.className = "choice";
         btn.onclick = function() {
+            if (answered) return;
+            answered = true;
             document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
             btn.classList.add('selected');
             nextBtn.disabled = false;
+            // Feedback visuel correct/incorrect
+            document.querySelectorAll('.choice').forEach((b, j)=>{
+              if(j===q.answer) b.classList.add('correct');
+              if(j!==q.answer && b.classList.contains('selected')) b.classList.add('incorrect');
+            });
         };
         choicesEl.appendChild(btn);
     });
+    updateProgress();
 }
 
 nextBtn.addEventListener('click', () => {
@@ -120,10 +268,11 @@ nextBtn.addEventListener('click', () => {
         questionEl.textContent = "Quiz terminé !";
         choicesEl.innerHTML = "";
         nextBtn.style.display = "none";
-        scoreEl.textContent = `Votre score : ${score} / ${questions.length}`;
+        progressBar.style.width = "100%";
+        const rate = score/questions.length;
+        scoreEl.innerHTML = `<span class="score-emoji">${emojiForScore(rate)}</span> <span>Votre score : ${score} / ${questions.length}</span>`;
     }
 });
-
 loadQuestion();
 </script>
 </body>
