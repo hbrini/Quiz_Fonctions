@@ -11,10 +11,27 @@
         font-family:'Segoe UI',Arial,sans-serif;
         min-height:100vh;
       }
+      .header-logo {
+        position: absolute;
+        top: 22px;
+        left: 30px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-logo img {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+        box-shadow:0 2px 10px #b8c8e255;
+        background: #fff;
+        object-fit: contain;
+      }
       .quiz-container {
         background: #fff;
         max-width: 440px;
-        margin: 40px auto 0 auto;
+        margin: 70px auto 0 auto;
         padding: 35px 30px 30px 30px;
         border-radius: 20px;
         box-shadow: 0 12px 32px rgba(122,143,209,0.20);
@@ -25,13 +42,6 @@
       @keyframes popIn {
         0% {transform:scale(0.93);}
         100%{transform:scale(1);}
-      }
-      .quiz-header-img {
-        width: 90px;
-        margin-bottom:2px;margin-top:-10px;
-        border-radius:12px;
-        box-shadow:0 4px 14px #d7dbec85;
-        background:#fff;
       }
       .quiz-title {
         font-size:1.45rem;
@@ -95,7 +105,7 @@
       #prevBtn {background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
       #nextBtn:disabled,#prevBtn:disabled,#retryBtn:disabled{opacity:.6;cursor:not-allowed;}
       #score {
-        font-size:1.3rem;font-weight:600;color:#227946;
+        font-size:1.3rem; font-weight:600; color:#227946;
         margin-top:30px;display:flex;align-items:center;justify-content:center;gap:14px;
       }
       .score-emoji {font-size:2.3rem;}
@@ -123,18 +133,18 @@
         max-width:200px;
         display:block;
       }
-      @media(max-width:600px){
-        .quiz-container{max-width:97%;padding:15px 4vw 22px 4vw;}
-        .quiz-header-img{width:55px;}
-        .quiz-title{font-size:1.1rem;}
-        #score{font-size:1.1rem;}
+      @media(max-width:650px){
+        .header-logo {left:8px;top:8px;}
+        .quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw; margin-top: 76px;}
+        .header-logo img{width:50px;height:50px;}
       }
     </style>
 </head>
 <body>
+<div class="header-logo">
+  <img src="https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/57920506/b2a8de4e-78ec-43db-98fb-2e5897d66133/HB.png" alt="HB Artisan Data" />
+</div>
 <div class="quiz-container">
-    <!-- Ton logo -->
-    <img src="HB.png" class="quiz-header-img" alt="Logo Artisan Data">
     <div class="quiz-title">Quiz sur les Fonctions Excel</div>
     <div class="progress">
        <div class="progress-bar" id="progressBar"></div>
@@ -229,10 +239,8 @@ function emojiForScore(rate) {
     return "📚";
 }
 function showFireworks() {
-    // Fireworks container
     if(document.getElementById("fireworks-container")) return;
     document.body.insertAdjacentHTML('beforeend', '<div id="fireworks-container"></div>');
-
     function createSparks() {
       const colors = ["#ff6600","#a3dcff","#faff80","#ff4878","#75fc7d","#ffffff","#0077ff"];
       const container = document.getElementById('fireworks-container');
@@ -254,7 +262,6 @@ function showFireworks() {
           }, 1400);
       }
     }
-    // Loop fireworks
     let loops = 0;
     const fireworksInterval = setInterval(() => {
       createSparks();
@@ -290,7 +297,6 @@ function loadQuestion() {
             btn.classList.add('selected');
             userChoices[currentQuestion] = i;
             nextBtn.disabled = false;
-            // Feedback visuel si répondu
             document.querySelectorAll('.choice').forEach((b, j)=>{
               b.classList.remove('correct','incorrect');
               if(userChoices[currentQuestion]!==null){
@@ -305,11 +311,9 @@ function loadQuestion() {
         document.querySelectorAll('.choice')[userChoices[currentQuestion]].classList.add('selected');
     }
     updateProgress();
-    // Réaffiche les boutons si fin de quiz précédente
     nextBtn.style.display = "";
     prevBtn.style.display = "";
 }
-
 function endQuiz() {
     let finalScore = userChoices.reduce((acc, val, idx)=> (val === questions[idx].answer ? acc+1 : acc),0);
     questionEl.textContent = "Quiz terminé !";
@@ -319,18 +323,14 @@ function endQuiz() {
     progressBar.style.width = "100%";
     const rate = finalScore/questions.length;
     scoreEl.innerHTML = `<span class="score-emoji">${emojiForScore(rate)}</span> <span>Votre score : ${finalScore} / ${questions.length}</span>`;
-
-    // - feux d'artifice si 100%, sinon bouton recommencer
     if(finalScore === questions.length) {
-        setTimeout(showFireworks, 350); // feu d'artifice
+        setTimeout(showFireworks, 350);
     }
     else {
-        // Affiche un bouton recommencer sous le score
         const retryBtn = document.createElement('button');
         retryBtn.textContent = "Recommencer le quiz";
         retryBtn.id = "retryBtn";
         retryBtn.onclick = function() {
-            // reset
             userChoices = Array(questions.length).fill(null);
             currentQuestion = 0;
             loadQuestion();
@@ -339,7 +339,6 @@ function endQuiz() {
         scoreEl.appendChild(retryBtn);
     }
 }
-
 nextBtn.addEventListener('click', () => {
     if(userChoices[currentQuestion] === null) return;
     if (currentQuestion < questions.length - 1) {
