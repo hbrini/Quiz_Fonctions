@@ -1,4 +1,28 @@
-// quiz.js
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Interactif Excel</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; background: #f8f9fa; }
+        .quiz-container { background: #fff; max-width: 500px; margin:auto; padding: 30px 50px; border-radius: 10px; box-shadow: 0 4px 8px #ddd; }
+        .question { font-weight: bold; margin-bottom: 18px; }
+        .choice { display: block; padding: 10px 0; cursor: pointer; margin-bottom: 10px; border: none; background: none; text-align: left; width: 100%; }
+        .choice.selected { background: #e3eefd; }
+        #nextBtn { padding: 10px 20px; margin-top: 10px; }
+        #score { font-size: 18px; font-weight: bold; color: #2e8b57; margin-top:20px; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <div id="quiz">
+        <div id="question" class="question"></div>
+        <div id="choices"></div>
+        <button id="nextBtn" disabled>Suivant</button>
+        <div id="score"></div>
+    </div>
+</div>
+<script>
 const questions = [
     {
         question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",
@@ -101,3 +125,6 @@ nextBtn.addEventListener('click', () => {
 });
 
 loadQuestion();
+</script>
+</body>
+</html>
