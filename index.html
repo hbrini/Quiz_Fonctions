@@ -46,10 +46,16 @@
       .progress { height:7px;width:90%;background:#e9ecf6;border-radius:5px; margin:15px auto 18px auto;overflow:hidden;}
       .progress-bar { height:7px;background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);width:0;border-radius:5px;transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);}
       .question { font-weight:bold;color:#1c3658;margin-bottom:24px;font-size:1.10rem;}
-      .choice{background: #f6f9fd;border:2px solid #dfecfa;border-radius:10px;padding: 13px 12px;margin:8px 0;font-size:1rem;cursor:pointer;text-align:left;transition: background .3s, border .2s;outline:none;display:block;width:100%;font-family: inherit;}
-      .choice.selected, .choice:hover{border:2.5px solid #3993db;background:#f1faff;}
-      .choice.correct{background:#daf6de;border-color:#32b872;color:#227946;}
-      .choice.incorrect{background:#ffe4e4;border-color:#f24843;color:#a42423;}
+      .choice{
+        background: #f6f9fd; border:2px solid #dfecfa; border-radius:10px; 
+        padding: 13px 12px; margin:8px 0; font-size:1rem; cursor:pointer;
+        text-align:left; transition: background .3s, border .2s; outline:none;
+        display:block; width:100%; font-family: inherit;
+      }
+      .choice.selected, .choice:hover{
+        border:2.5px solid #3993db;background:#f1faff;
+      }
+      /* SUPPRIME LES COULEURS DE CORRECTION, PAS DE .correct NI .incorrect */
       .button-group {display:flex;justify-content:space-between;gap:10px;margin-top:10px;margin-bottom:-8px;}
       #prevBtn,#nextBtn,#retryBtn{flex:1 1 0;padding:10px 0;background:linear-gradient(90deg,#86e8b2 20%,#3993db 70%);color:#fff;font-weight:bold;font-size:1rem;border:none;border-radius:8px;cursor:pointer;transition: background 0.25s;box-shadow:0 2px 8px #e0eafc55;}
       #prevBtn{background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
@@ -94,48 +100,31 @@ function shuffleArray(arr) {
     }
 }
 const questionsOrig = [
-    {
-      question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?",
-      choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"], answer: 2
-    },
-    {
-      question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?",
-      choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"], answer: 2
-    },
-    {
-      question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?",
-      choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"], answer: 2
-    },
-    {
-      question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :",
-      choices: [
+    { question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?", choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"], answer: 2 },
+    { question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?", choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"], answer: 2 },
+    { question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?", choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"], answer: 2 },
+    { question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :", choices: [
         "A) Compter uniquement les jours ouvrables du lundi au vendredi",
         "B) Compter les jours ouvrés avec des week-ends personnalisés",
         "C) Compter les jours de congé uniquement",
         "D) Compter les jours fériés selon un pays"
       ], answer: 1
     },
-    {
-      question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?",
-      choices: [
+    { question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?", choices: [
         "A) =$A1=\"URGENT\"",
         "B) =A1=\"URGENT\"",
         "C) =$A$1=\"URGENT\"",
         "D) =SI(A1=\"URGENT\")"
       ], answer: 0
     },
-    {
-      question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?",
-      choices: [
+    { question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?", choices: [
         "A) Donne la valeur de la cellule B2",
         "B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3",
         "C) Renvoie une cellule vide",
         "D) Crée une adresse mail"
       ], answer: 1
     },
-    {
-      question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?",
-      choices: [
+    { question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?", choices: [
         "A) CONCATENER",
         "B) STXT",
         "C) JOINDRE.TEXTE",
@@ -207,26 +196,18 @@ function loadQuestion() {
         let btn = document.createElement("button");
         btn.textContent = choice;
         btn.className = "choice";
-        if(userChoices[currentQuestion] !== null){
+        if(userChoices[currentQuestion] === i){
             btn.classList.add('selected');
-            if (i === q.answer) btn.classList.add('correct');
-            if (i !== q.answer && i === userChoices[currentQuestion]) btn.classList.add('incorrect');
         }
         btn.onclick = function() {
-            document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected','incorrect','correct'));
+            document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
             btn.classList.add('selected');
             userChoices[currentQuestion] = i;
             nextBtn.disabled = false;
-            document.querySelectorAll('.choice').forEach((b, j)=>{
-              b.classList.remove('correct','incorrect');
-              if(userChoices[currentQuestion]!==null){
-                if(j===q.answer) b.classList.add('correct');
-                if(j!==q.answer && j === userChoices[currentQuestion]) b.classList.add('incorrect');
-              }
-            });
         };
         choicesEl.appendChild(btn);
     });
+    // pré-selection si existant
     if (userChoices[currentQuestion] !== null) {
         document.querySelectorAll('.choice')[userChoices[currentQuestion]].classList.add('selected');
     }
@@ -260,9 +241,9 @@ function endQuiz() {
         scoreEl.appendChild(retryBtn);
     }
 }
-nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return;if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
+nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return; if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
 prevBtn.addEventListener('click', () => {if (currentQuestion > 0) {currentQuestion--;loadQuestion();}});
-shuffleQuestionsChoices(); // Mélange à chaque chargement initial
+shuffleQuestionsChoices();
 userChoices = Array(questions.length).fill(null);
 loadQuestion();
 </script>
