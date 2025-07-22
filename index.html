@@ -33,7 +33,7 @@
         z-index: 10;
       }
       .logo-box img{
-        width: 100px;  /* Taille agrandie */
+        width: 100px;
         height: 100px;
         border-radius: 14px;
         box-shadow:0 2px 12px #b8c8e255;
@@ -55,12 +55,12 @@
       .choice.selected, .choice:hover{
         border:2.5px solid #3993db;background:#f1faff;
       }
-      /* SUPPRIME LES COULEURS DE CORRECTION, PAS DE .correct NI .incorrect */
       .button-group {display:flex;justify-content:space-between;gap:10px;margin-top:10px;margin-bottom:-8px;}
       #prevBtn,#nextBtn,#retryBtn{flex:1 1 0;padding:10px 0;background:linear-gradient(90deg,#86e8b2 20%,#3993db 70%);color:#fff;font-weight:bold;font-size:1rem;border:none;border-radius:8px;cursor:pointer;transition: background 0.25s;box-shadow:0 2px 8px #e0eafc55;}
       #prevBtn{background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
       #nextBtn:disabled,#prevBtn:disabled,#retryBtn:disabled{opacity:.6;cursor:not-allowed;}
       #score{font-size:1.3rem;font-weight:600;color:#227946;margin-top:30px;display:flex;align-items:center;justify-content:center;gap:14px;}
+      #fun-msg{font-size:1.10rem;font-weight:500;margin-top:14px;margin-left:auto;margin-right:auto;color:#227946;padding-bottom:10px;text-align:center;}
       .score-emoji{font-size:2.3rem;}
       #fireworks-container{position: fixed;top: 0; left: 0; width: 100vw; height: 100vh;pointer-events: none; z-index: 9999;}
       .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#ffdd55,#ff6600,#39f);animation:spark-move 1.2s linear forwards;}
@@ -90,6 +90,7 @@
           <button id="nextBtn" disabled>Suivant</button>
         </div>
         <div id="score"></div>
+        <div id="fun-msg"></div>
     </div>
 </div>
 <script>
@@ -141,9 +142,9 @@ const nextBtn = document.getElementById("nextBtn");
 const prevBtn = document.getElementById("prevBtn");
 const scoreEl = document.getElementById("score");
 const progressBar = document.getElementById("progressBar");
+const funMsgEl = document.getElementById("fun-msg");
 
 function shuffleQuestionsChoices() {
-    // clone les questions pour un nouvel ordre/mélange propre à chaque jeu
     questions = questionsOrig.map(q => {
       let qCopy = {question: q.question, choices: [...q.choices], answer: q.answer};
       const correctText = qCopy.choices[qCopy.answer];
@@ -152,12 +153,24 @@ function shuffleQuestionsChoices() {
       return qCopy;
     });
 }
-function emojiForScore(rate) {
-    if (rate === 1) return "🎉";
-    if (rate >= 0.85) return "👏";
-    if (rate >= 0.65) return "😊";
-    if (rate >= 0.4) return "🙂";
-    return "📚";
+function emojiAndMsgForScore(rate) {
+    if (rate === 1) return {
+      emoji: "🎉",
+      msg: "Bravo, score parfait ! Tu es le boss des fonctions Excel ! 🎉🥳"
+    };
+    if (rate >= 0.7) return {
+      emoji: "👏",
+      msg: "Félicitations, joli score ! Tu maîtrises déjà bien, mais tu peux tenter le 100% 💪😉"
+    };
+    if (rate >= 0.5) return {
+      emoji: "🙂",
+      msg: "Pas mal ! C’est la moyenne, mais tu peux faire encore mieux. Courage et retente ta chance ! 🤗"
+    };
+    // moins de 50%
+    return {
+      emoji: "📚",
+      msg: "Ce n’est que le début ! Continue d’apprendre et retente le quiz : la réussite n’est pas loin 🚀"
+    };
 }
 function showFireworks() {
     if(document.getElementById("fireworks-container")) return;
@@ -189,6 +202,7 @@ function loadQuestion() {
     nextBtn.disabled = userChoices[currentQuestion] === null;
     prevBtn.disabled = currentQuestion === 0;
     scoreEl.textContent = "";
+    funMsgEl.textContent = "";
     let q = questions[currentQuestion];
     questionEl.textContent = q.question;
     choicesEl.innerHTML = "";
@@ -223,7 +237,9 @@ function endQuiz() {
     prevBtn.style.display = "none";
     progressBar.style.width = "100%";
     const rate = finalScore/questions.length;
-    scoreEl.innerHTML = `<span class="score-emoji">${emojiForScore(rate)}</span> <span>Votre score : ${finalScore} / ${questions.length}</span>`;
+    const {emoji, msg} = emojiAndMsgForScore(rate);
+    scoreEl.innerHTML = `<span class="score-emoji">${emoji}</span> <span>Votre score : ${finalScore} / ${questions.length}</span>`;
+    funMsgEl.textContent = msg;
     if(finalScore === questions.length) {
         setTimeout(showFireworks, 350);
     }
@@ -237,8 +253,9 @@ function endQuiz() {
             currentQuestion = 0;
             loadQuestion();
             scoreEl.textContent = "";
+            funMsgEl.textContent = "";
         };
-        scoreEl.appendChild(retryBtn);
+        funMsgEl.appendChild(retryBtn);
     }
 }
 nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return; if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
