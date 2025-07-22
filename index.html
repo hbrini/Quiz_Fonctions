@@ -25,23 +25,27 @@
       @keyframes popIn { 0%{transform:scale(0.93);} 100%{transform:scale(1);} }
       .logo-box {
         position: absolute;
-        top: 8px; left: 14px;
-        width: 120px; height: 120px;
+        top: 18px; left: 18px;
+        width: 84px; height: 84px;
         display: flex;
         align-items: flex-start;
         background: none;
         z-index: 10;
       }
       .logo-box img{
-        width: 100px;
-        height: 100px;
+        width: 80px;  /* Taille parfaite pour ne pas cacher le titre */
+        height: 80px;
         border-radius: 14px;
         box-shadow:0 2px 12px #b8c8e255;
         object-fit: contain;
         background: #fff;
       }
+      .spacer-logo {
+        height: 54px;
+        /* Laisse la place au logo pour le titre même en responsive */
+      }
       .quiz-title {
-        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:20px;
+        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:0;
       }
       .progress { height:7px;width:90%;background:#e9ecf6;border-radius:5px; margin:15px auto 18px auto;overflow:hidden;}
       .progress-bar { height:7px;background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);width:0;border-radius:5px;transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);}
@@ -68,8 +72,9 @@
       #retryBtn{margin: 22px auto 0 auto;background:linear-gradient(90deg,#34e194 10%,#3582e8 80%);max-width:200px;display:block;}
       @media(max-width:650px){
         .quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw;margin-top: 76px;}
-        .logo-box{top:3px;left:7px;width:70px;height:70px;}
-        .logo-box img{width:55px;height:55px;}
+        .logo-box{top:3px;left:7px;width:48px;height:48px;}
+        .logo-box img{width:44px;height:44px;}
+        .spacer-logo {height: 29px;}
       }
     </style>
 </head>
@@ -78,6 +83,7 @@
     <div class="logo-box">
         <img src="HB.png" alt="HB Artisan Data" />
     </div>
+    <div class="spacer-logo"></div>
     <div class="quiz-title">Quiz sur les Fonctions Excel</div>
     <div class="progress">
        <div class="progress-bar" id="progressBar"></div>
