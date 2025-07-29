@@ -1,585 +1,274 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>Défi Excel : Maîtrisez les 30 Jours en Quiz !</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  body {
-    margin: 0; padding: 0;
-    background: linear-gradient(135deg,#74ebd5 0%,#acb6e5 100%);
-    font-family:'Segoe UI',Arial,sans-serif;
-    min-height:100vh;
-  }
-  .quiz-container {
-    background: #fff;
-    max-width: 480px;
-    margin: 70px auto 70px auto;
-    padding: 35px 30px 30px 30px;
-    border-radius: 20px;
-    box-shadow: 0 12px 32px rgba(122,143,209,0.20);
-    text-align: center;
-    position: relative;
-    animation: popIn 0.7s;
-  }
-  @keyframes popIn { 
-    0%{transform:scale(0.93);} 
-    100%{transform:scale(1);} 
-  }
-  .logo-box {
-    position: absolute;
-    top: 5px; /* remonté de 13px par rapport à avant */
-    left: 18px;
-    width: 84px; height: 84px;
-    display: flex;
-    align-items: flex-start;
-    background: none;
-    z-index: 10;
-  }
-  .logo-box img {
-    width: 80px;
-    height: 80px;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(184,200,226,0.33);
-    object-fit: contain;
-    background: transparent; /* fond transparent */
-  }
-  .spacer-logo { height: 54px; }
-  
-  .quiz-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-  .quiz-title {
-    font-size: 1.45rem;
-    color: #4566af;
-    margin: 0;
-    font-weight: 700;
-  }
-  /* Barre progress émotion / emoji sous le titre */
-  .quiz-steps {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.1em;
-    color: #3b6ab8;
-    font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    user-select: none;
-  }
-  .quiz-steps span {
-    display: flex;
-    align-items: center;
-  }
-  .emoji-flag, .emoji-finish {
-    font-size: 1.6em;
-  }
-  .quiz-steps .dot {
-    width: 9px;
-    height: 9px;
-    background-color: #3993db;
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.4s ease;
-  }
-  .quiz-steps .dot.active {
-    background-color: #86e8b2;
-  }
-
-  .progress {
-    height: 7px;
-    width: 90%;
-    background: #e9ecf6;
-    border-radius: 5px;
-    margin: 15px auto 18px auto;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 7px;
-    background: linear-gradient(90deg,#3993db 50%,#86e8b2 100%);
-    width: 0;
-    border-radius: 5px;
-    transition: width 0.55s cubic-bezier(.68,-0.55,.27,1.55);
-  }
-  .question {
-    font-weight: bold;
-    color: #1c3658;
-    margin-bottom: 14px;
-    font-size: 1.12rem;
-    min-height: 64px;
-  }
-  .choices-container {
-    text-align: left;
-    margin: 0 auto 15px;
-    max-width: 430px;
-  }
-  button.choice {
-    background: #f6f9fd;
-    border: 2px solid #dfecfa;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin: 10px 0;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s, border 0.2s;
-    outline: none;
-    width: 100%;
-    text-align: left;
-    font-family: inherit;
-  }
-  button.choice.selected,
-  button.choice:hover {
-    border: 2.5px solid #3993db;
-    background: #f1faff;
-  }
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 12px;
-    margin-bottom: -6px;
-  }
-  #prevBtn, #nextBtn, #retryBtn {
-    flex: 1 1 0;
-    padding: 10px 0;
-    background: linear-gradient(90deg,#86e8b2 20%,#3993db 70%);
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.25s;
-    box-shadow: 0 2px 8px #e0eafc55;
-  }
-  #prevBtn {
-    background: linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);
-  }
-  #nextBtn:disabled, #prevBtn:disabled, #retryBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  #score {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #227946;
-    margin-top: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-  }
-  #fun-msg {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-top: 14px;
-    margin-left: auto;
-    margin-right: auto;
-    color: #227946;
-    padding-bottom: 10px;
-    text-align: center;
-    min-height: 50px;
-  }
-  .score-emoji {
-    font-size: 2.3rem;
-  }
-  .explanation-box {
-    background: #fefefe;
-    color: #222222;
-    padding: 16px 20px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-    border-radius: 12px;
-    font-size: 1rem;
-    line-height: 1.5;
-    max-width: 100%;
-    word-break: break-word;
-    margin-top: 10px;
-    text-align: left;
-  }
-  #showExplanationBtn {
-    display: none;
-    margin-top: 8px;
-    background: #4178d2;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 28px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    box-shadow: 0 5px 12px rgba(65, 120, 210, 0.6);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    user-select: none;
-  }
-  #showExplanationBtn:hover {
-    background: #2a57a4;
-    box-shadow: 0 8px 20px rgba(42, 87, 164, 0.8);
-  }
-  #showExplanationBtn:focus {
-    outline: 3px solid #7fb3ff;
-    outline-offset: 3px;
-  }
-  @media(max-width:650px) {
-    .quiz-container {
-      max-width: 97%;
-      padding: 12vw 2vw 8vw 2vw;
-      margin-top: 76px;
-      margin-bottom: 50px;
-    }
-    .logo-box {
-      top: 3px; /* responsive ajusté légèrement */
-      left: 7px;
-      width: 48px;
-      height: 48px;
-    }
-    .logo-box img {
-      width: 44px;
-      height: 44px;
-    }
-    .spacer-logo {
-      height: 29px;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>Quiz Interactif Excel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        margin: 0; padding: 0;
+        background: linear-gradient(135deg,#74ebd5 0%,#acb6e5 100%);
+        font-family:'Segoe UI',Arial,sans-serif;
+        min-height:100vh;
+      }
+      .quiz-container {
+        background: #fff;
+        max-width: 440px;
+        margin: 70px auto 0 auto;
+        padding: 35px 30px 30px 30px;
+        border-radius: 20px;
+        box-shadow: 0 12px 32px rgba(122,143,209,0.20);
+        text-align: center;
+        position: relative;
+        animation:popIn 0.7s;
+      }
+      @keyframes popIn { 0%{transform:scale(0.93);} 100%{transform:scale(1);} }
+      .logo-box {
+        position: absolute;
+        top: 18px; left: 18px;
+        width: 84px; height: 84px;
+        display: flex;
+        align-items: flex-start;
+        background: none;
+        z-index: 10;
+      }
+      .logo-box img{
+        width: 80px;  /* Taille parfaite pour ne pas cacher le titre */
+        height: 80px;
+        border-radius: 14px;
+        box-shadow:0 2px 12px #b8c8e255;
+        object-fit: contain;
+        background: #fff;
+      }
+      .spacer-logo {
+        height: 54px;
+        /* Laisse la place au logo pour le titre même en responsive */
+      }
+      .quiz-title {
+        font-size:1.45rem;color:#4566af;margin-bottom:10px;margin-top:0;
+      }
+      .progress { height:7px;width:90%;background:#e9ecf6;border-radius:5px; margin:15px auto 18px auto;overflow:hidden;}
+      .progress-bar { height:7px;background:linear-gradient(90deg,#3993db 50%,#86e8b2 100%);width:0;border-radius:5px;transition: width .55s cubic-bezier(.68,-0.55,.27,1.55);}
+      .question { font-weight:bold;color:#1c3658;margin-bottom:24px;font-size:1.10rem;}
+      .choice{
+        background: #f6f9fd; border:2px solid #dfecfa; border-radius:10px; 
+        padding: 13px 12px; margin:8px 0; font-size:1rem; cursor:pointer;
+        text-align:left; transition: background .3s, border .2s; outline:none;
+        display:block; width:100%; font-family: inherit;
+      }
+      .choice.selected, .choice:hover{
+        border:2.5px solid #3993db;background:#f1faff;
+      }
+      .button-group {display:flex;justify-content:space-between;gap:10px;margin-top:10px;margin-bottom:-8px;}
+      #prevBtn,#nextBtn,#retryBtn{flex:1 1 0;padding:10px 0;background:linear-gradient(90deg,#86e8b2 20%,#3993db 70%);color:#fff;font-weight:bold;font-size:1rem;border:none;border-radius:8px;cursor:pointer;transition: background 0.25s;box-shadow:0 2px 8px #e0eafc55;}
+      #prevBtn{background:linear-gradient(90deg,#f7d358 10%,#f96c6c 80%);}
+      #nextBtn:disabled,#prevBtn:disabled,#retryBtn:disabled{opacity:.6;cursor:not-allowed;}
+      #score{font-size:1.3rem;font-weight:600;color:#227946;margin-top:30px;display:flex;align-items:center;justify-content:center;gap:14px;}
+      #fun-msg{font-size:1.10rem;font-weight:500;margin-top:14px;margin-left:auto;margin-right:auto;color:#227946;padding-bottom:10px;text-align:center;}
+      .score-emoji{font-size:2.3rem;}
+      #fireworks-container{position: fixed;top: 0; left: 0; width: 100vw; height: 100vh;pointer-events: none; z-index: 9999;}
+      .spark{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#ffdd55,#ff6600,#39f);animation:spark-move 1.2s linear forwards;}
+      @keyframes spark-move{to{transform:translateY(-320px) translateX(var(--tx,40px));opacity:0;}}
+      #retryBtn{margin: 22px auto 0 auto;background:linear-gradient(90deg,#34e194 10%,#3582e8 80%);max-width:200px;display:block;}
+      @media(max-width:650px){
+        .quiz-container{max-width:97%;padding:12vw 2vw 8vw 2vw;margin-top: 76px;}
+        .logo-box{top:3px;left:7px;width:48px;height:48px;}
+        .logo-box img{width:44px;height:44px;}
+        .spacer-logo {height: 29px;}
+      }
+    </style>
 </head>
 <body>
-<div class="quiz-container" role="main" aria-label="Quiz Excel Série 30 jours">
-  <div class="logo-box" aria-hidden="true">
-    <img src="HB.png" alt="Logo HB Artisan Data" />
-  </div>
-  <div class="spacer-logo"></div>
-  <div class="quiz-header">
-    <h1 class="quiz-title" id="quizTitle">🎯 Défi Excel : Maîtrisez les 30 Jours en Quiz ! 🎉</h1>
-    <div class="quiz-steps" aria-hidden="true" id="quizSteps">
-      <span class="emoji-flag" aria-label="Départ">🚩</span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="emoji-finish" aria-label="Arrivée">🏁</span>
+<div class="quiz-container">
+    <div class="logo-box">
+        <img src="HB.png" alt="HB Artisan Data" />
     </div>
-  </div>
-  <div class="progress" aria-hidden="true">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div id="quiz" aria-live="polite" aria-atomic="true">
-    <div id="question" class="question" tabindex="0">Chargement...</div>
-    <div class="choices-container" id="choices"></div>
-    <button id="showExplanationBtn" aria-label="Afficher l'explication" type="button">Voir l'explication</button>
-    <div class="explanation-box" id="explanation" style="display:none;"></div>
-    <div class="button-group">
-      <button id="prevBtn" aria-label="Question précédente" type="button">Précédent</button>
-      <button id="nextBtn" disabled aria-label="Question suivante" type="button">Suivant</button>
+    <div class="spacer-logo"></div>
+    <div class="quiz-title">Quiz sur les Fonctions Excel</div>
+    <div class="progress">
+       <div class="progress-bar" id="progressBar"></div>
     </div>
-  </div>
-  <div id="score" aria-live="polite" aria-atomic="true"></div>
-  <div id="fun-msg"></div>
+    <div id="quiz">
+        <div id="question" class="question"></div>
+        <div id="choices"></div>
+        <div class="button-group">
+          <button id="prevBtn">Précédent</button>
+          <button id="nextBtn" disabled>Suivant</button>
+        </div>
+        <div id="score"></div>
+        <div id="fun-msg"></div>
+    </div>
 </div>
-
 <script>
-  const questionsOrig = [
-    {
-      question: "Quelle fonctionnalité Excel permet de filtrer dynamiquement une plage selon un critère ?",
-      choices: ["CHOISIRCOLS", "TRIER", "FILTRE", "UNIQUE"],
-      answer: 2,
-      explanation: "💡 <b>La fonction FILTRE</b> permet d’extraire des données selon un ou plusieurs critères, pour créer des listes dynamiques et actualisées."
-    },
-    {
-      question: "Quel symbole dans une référence Excel indique une référence absolue de cellule ?",
-      choices: ["$A$1", "A1", "A$1", "$A1"],
-      answer: 0,
-      explanation: `✅ Le signe <b>$</b> devant la lettre fixe la colonne (référence absolue sur colonne).<br>
-                    ✅ Le signe <b>$</b> devant le chiffre fixe la ligne (référence absolue sur ligne).<br>
-                    ✅ <b>$A$1</b> fixe à la fois la ligne et la colonne.<br>
-                    Ces références sont utilisées pour verrouiller la position des cellules lors d'une recopie ou un glissement de formule.`
-    },
-    {
-      question: "Que permet la fonction SI dans Excel ?",
-      choices: ["Effectuer un test logique et renvoyer une valeur selon vrai/faux", "Faire une somme conditionnelle", "Filtrer des données", "Formater une cellule"],
-      answer: 0,
-      explanation: "🔍 La fonction SI teste une condition logique et renvoie une valeur si elle est vraie, une autre si elle est fausse."
-    },
-    {
-      question: "Comment sécuriser une cellule Excel pour empêcher sa modification tout en laissant d’autres cellules modifiables ?",
-      choices: [
-        "Protéger toute la feuille sans déverrouiller aucune cellule",
-        "Déverrouiller les cellules modifiables, puis protéger la feuille",
-        "Verrouiller les cellules à modifier et protéger le classeur",
-        "Mettre un mot de passe sur le fichier sans protéger la feuille"
-      ],
-      answer: 1,
-      explanation: "💡 Excel verrouille les cellules par défaut, mais c’est la protection de la feuille qui entraine leur verrouillage. Déverrouille d’abord les cellules modifiables avant de protéger la feuille."
-    },
-    {
-      question: "Quelle fonctionnalité permet de gérer plusieurs filtres interactifs liés pour un tableau de bord dynamique ?",
-      choices: ["Formules matricielles", "Segments et chronologies", "Mise en forme conditionnelle", "Validation de données"],
-      answer: 1,
-      explanation: "✅ Les segments et chronologies permettent de filtrer plusieurs tableaux croisés dynamiques et graphiques de manière synchronisée et intuitive."
-    },
-    {
-      question: "Quelle méthode permet de mettre à jour automatiquement un graphique Excel dans PowerPoint ?",
-      choices: [
-        "Copier-coller simple",
-        "Exporter au format image",
-        "Collage spécial avec liaison",
-        "Exporter en PDF"
-      ],
-      answer: 2,
-      explanation: "💡 Le collage spécial avec liaison crée un lien dynamique, qui met à jour automatiquement les graphiques dans PowerPoint."
-    },
-    {
-      question: "Quelle est la fonction d’une formule NOMMÉE dans Excel ?",
-      choices: [
-        "Créer une variable pour une plage/valeur réutilisable",
-        "Mettre en forme conditionnelle une cellule",
-        "Calculer la moyenne d’une plage",
-        "Protéger une cellule"
-      ],
-      answer: 0,
-      explanation: "🔍 Nommer une plage ou une valeur permet de simplifier les formules et de rendre le fichier plus clair et facile à maintenir."
-    },
-    {
-      question: "Quelle est la meilleure pratique pour organiser un classeur contenant un tableau de bord ?",
-      choices: [
-        "Mettre TCD, graphiques et segments tous mélangés sur une même feuille",
-        "Dédier une feuille aux graphiques dynamiques avec les segments placés à côté, et une autre feuille aux TCD",
-        "Mettre tous les éléments dans une feuille cachée",
-        "Ne pas utiliser de segments"
-      ],
-      answer: 1,
-      explanation: "✅ Pour une organisation optimale, regroupe les graphiques dynamiques et leurs segments sur une même feuille pour un filtrage visuel intuitif, et place les TCD dans une feuille séparée pour un tableau de bord clair."
-    },
-    {
-      question: "Que protège la fonction \"Protéger la structure du classeur\" dans Excel ?",
-      choices: [
-        "Les données dans les cellules",
-        "Le contenu des macros VBA",
-        "L’ajout, suppression ou déplacement des feuilles",
-        "Le formatage conditionnel"
-      ],
-      answer: 2,
-      explanation: "💡 Cette protection bloque les modifications de la structure : ajout, suppression ou déplacement des feuilles."
-    },
-    {
-      question: "Quelle est la limite d’une protection par mot de passe à l’ouverture d’un fichier Excel ?",
-      choices: [
-        "Le fichier reste modifiable même protégé",
-        "Le mot de passe est impossible à récupérer en cas d’oubli",
-        "Le mot de passe peut être facilement deviné",
-        "Il protège uniquement les macros"
-      ],
-      answer: 1,
-      explanation: "⚠️ Attention : en cas d’oubli du mot de passe à l’ouverture, le fichier devient inaccessible sans possibilité de récupération."
-    }
-  ];
-
-  let questions;
-  let currentQuestion = 0;
-  let userChoices = [];
-  let answered = false;
-
-  const questionEl = document.getElementById("question");
-  const choicesEl = document.getElementById("choices");
-  const nextBtn = document.getElementById("nextBtn");
-  const prevBtn = document.getElementById("prevBtn");
-  const scoreEl = document.getElementById("score");
-  const progressBar = document.getElementById("progressBar");
-  const funMsgEl = document.getElementById("fun-msg");
-  const explanationEl = document.getElementById("explanation");
-  const showExplanationBtn = document.getElementById("showExplanationBtn");
-  const quizStepsEl = document.getElementById("quizSteps");
-  const dots = Array.from(quizStepsEl.querySelectorAll(".dot"));
-
-  function shuffleArray(arr) {
+function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-  }
+}
+const questionsOrig = [
+    { question: "Q1 – Quelle fonction permet de filtrer dynamiquement une plage de données selon un critère ?", choices: ["A) CHOISIRCOLS", "B) TRIER", "C) FILTRE", "D) UNIQUE"], answer: 2 },
+    { question: "Q2 – Quelle combinaison permet de nommer une cellule de façon à ce qu’elle s’adapte en glissant verticalement ?", choices: ["A) $A$2", "B) Feuil2!$A$2", "C) Feuil2!$A2", "D) A$2"], answer: 2 },
+    { question: "Q3 – Quelle formule permet de créer une fonction personnalisée dans Excel ?", choices: ["A) LET", "B) NOMMER", "C) LAMBDA", "D) ADRESSE"], answer: 2 },
+    { question: "Q4 – La fonction NB.JOURS.OUVRES.INTL permet de :", choices: [
+        "A) Compter uniquement les jours ouvrables du lundi au vendredi",
+        "B) Compter les jours ouvrés avec des week-ends personnalisés",
+        "C) Compter les jours de congé uniquement",
+        "D) Compter les jours fériés selon un pays"
+      ], answer: 1
+    },
+    { question: "Q5 – Quelle syntaxe permet de mettre en forme conditionnellement une ligne entière si une cellule contient “URGENT” ?", choices: [
+        "A) =$A1=\"URGENT\"",
+        "B) =A1=\"URGENT\"",
+        "C) =$A$1=\"URGENT\"",
+        "D) =SI(A1=\"URGENT\")"
+      ], answer: 0
+    },
+    { question: "Q6 – À quoi sert la fonction ADRESSE(2;3) ?", choices: [
+        "A) Donne la valeur de la cellule B2",
+        "B) Donne l’adresse sous forme de texte de la cellule ligne 2, colonne 3",
+        "C) Renvoie une cellule vide",
+        "D) Crée une adresse mail"
+      ], answer: 1
+    },
+    { question: "Q7 – Laquelle de ces fonctions est nouvelle avec Excel 365 ?", choices: [
+        "A) CONCATENER",
+        "B) STXT",
+        "C) JOINDRE.TEXTE",
+        "D) TEXTE"
+      ], answer: 2
+    }
+];
+let questions;
+let currentQuestion = 0;
+let userChoices = [];
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const nextBtn = document.getElementById("nextBtn");
+const prevBtn = document.getElementById("prevBtn");
+const scoreEl = document.getElementById("score");
+const progressBar = document.getElementById("progressBar");
+const funMsgEl = document.getElementById("fun-msg");
 
-  function shuffleQuestionsChoices() {
+function shuffleQuestionsChoices() {
     questions = questionsOrig.map(q => {
-      let qCopy = {
-        question: q.question,
-        choices: [...q.choices],
-        answer: q.answer,
-        explanation: q.explanation
-      };
+      let qCopy = {question: q.question, choices: [...q.choices], answer: q.answer};
       const correctText = qCopy.choices[qCopy.answer];
       shuffleArray(qCopy.choices);
       qCopy.answer = qCopy.choices.indexOf(correctText);
       return qCopy;
     });
-  }
-
-  function updateDots(current) {
-    dots.forEach((dot, i) => {
-      if (i < current) {
-        dot.classList.add("active");
-      } else {
-        dot.classList.remove("active");
+}
+function emojiAndMsgForScore(rate) {
+    if (rate === 1) return {
+      emoji: "🎉",
+      msg: "Bravo, score parfait ! Tu es le boss des fonctions Excel ! 🎉🥳"
+    };
+    if (rate >= 0.7) return {
+      emoji: "👏",
+      msg: "Félicitations, joli score ! Tu maîtrises déjà bien, mais tu peux tenter le 100% 💪😉"
+    };
+    if (rate >= 0.5) return {
+      emoji: "🙂",
+      msg: "Pas mal ! C’est la moyenne, mais tu peux faire encore mieux. Courage et retente ta chance ! 🤗"
+    };
+    // moins de 50%
+    return {
+      emoji: "📚",
+      msg: "Ce n’est que le début ! Continue d’apprendre et retente le quiz : la réussite n’est pas loin 🚀"
+    };
+}
+function showFireworks() {
+    if(document.getElementById("fireworks-container")) return;
+    document.body.insertAdjacentHTML('beforeend', '<div id="fireworks-container"></div>');
+    function createSparks() {
+      const colors = ["#ff6600","#a3dcff","#faff80","#ff4878","#75fc7d","#ffffff","#0077ff"];
+      const container = document.getElementById('fireworks-container');
+      const count = Math.floor(12 + Math.random()*12);
+      const w = window.innerWidth, h = window.innerHeight;
+      for(let i=0; i<count; i++) {
+          const angle = 2*Math.PI*i/count;
+          const radius = Math.random()*150 + 60;
+          const spark = document.createElement('div');
+          spark.className = 'spark';
+          spark.style.left = (w/2 + Math.cos(angle)*radius) + "px";
+          spark.style.top = (h/2 + Math.sin(angle)*radius) + "px";
+          spark.style.background = `radial-gradient(circle,${colors[Math.floor(Math.random()*colors.length)]},transparent 80%)`;
+          spark.style.setProperty('--tx', `${Math.cos(angle)*radius}px`);
+          spark.style.animationDuration = (.7+.6*Math.random())+'s';
+          container.appendChild(spark);
+          setTimeout(() => {if(container.contains(spark)) container.removeChild(spark);}, 1400);
       }
-    });
-  }
-
-  function loadQuestion() {
-    answered = false;
-    explanationEl.style.display = "none";
-    showExplanationBtn.style.display = "none";
-    nextBtn.disabled = true;
+    }
+    let loops = 0;
+    const fireworksInterval = setInterval(() => {createSparks();loops++;if(loops>=4){clearInterval(fireworksInterval);setTimeout(()=>{let c=document.getElementById("fireworks-container");if(c) c.parentNode.removeChild(c);},1400);}}, 1000);
+}
+function updateProgress() {progressBar.style.width = ((currentQuestion) / questions.length * 100) + "%";}
+function loadQuestion() {
+    nextBtn.disabled = userChoices[currentQuestion] === null;
+    prevBtn.disabled = currentQuestion === 0;
     scoreEl.textContent = "";
     funMsgEl.textContent = "";
     let q = questions[currentQuestion];
-    questionEl.textContent = `Q${currentQuestion + 1} / ${questions.length} – ${q.question}`;
+    questionEl.textContent = q.question;
     choicesEl.innerHTML = "";
-
     q.choices.forEach((choice, i) => {
-      let btn = document.createElement("button");
-      btn.className = "choice";
-      btn.textContent = choice;
-      btn.setAttribute("tabindex","0");
-      btn.onclick = function() {
-        if (answered) return;
-        document.querySelectorAll(".choice").forEach(c => c.classList.remove("selected"));
-        btn.classList.add("selected");
-        userChoices[currentQuestion] = i;
-        nextBtn.disabled = false;
-        showExplanationBtn.style.display = "inline-block";
-      };
-      choicesEl.appendChild(btn);
+        let btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.className = "choice";
+        if(userChoices[currentQuestion] === i){
+            btn.classList.add('selected');
+        }
+        btn.onclick = function() {
+            document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            userChoices[currentQuestion] = i;
+            nextBtn.disabled = false;
+        };
+        choicesEl.appendChild(btn);
     });
-
-    if (userChoices[currentQuestion] !== null && userChoices[currentQuestion] !== undefined) {
-      let prevSelected = choicesEl.children[userChoices[currentQuestion]];
-      if (prevSelected) prevSelected.classList.add("selected");
-      nextBtn.disabled = false;
-      showExplanationBtn.style.display = "inline-block";
+    // pré-selection si existant
+    if (userChoices[currentQuestion] !== null) {
+        document.querySelectorAll('.choice')[userChoices[currentQuestion]].classList.add('selected');
     }
-
-    prevBtn.disabled = currentQuestion === 0;
     updateProgress();
-    updateDots(currentQuestion);
-  }
-
-  function updateProgress() {
-    progressBar.style.width = ((currentQuestion) / questions.length) * 100 + "%";
-  }
-
-  function showExplanation() {
-    if (answered) return;
-    answered = true;
-    const q = questions[currentQuestion];
-    explanationEl.innerHTML = q.explanation;
-    explanationEl.style.display = "block";
-
-    [...choicesEl.children].forEach((btn, idx) => {
-      btn.disabled = true;
-      if (idx === q.answer) {
-        btn.style.borderColor = "#32b37a";
-        btn.style.fontWeight = "bold";
-      } else if (userChoices[currentQuestion] === idx) {
-        btn.style.borderColor = "#e75252";
-        btn.style.textDecoration = "line-through";
-      }
-    });
-
-    if (currentQuestion === questions.length - 1) {
-      showScore();
-    }
-  }
-
-  function showScore() {
-    let correctCount = userChoices.reduce((acc, val, idx) => val === questions[idx].answer ? acc + 1 : acc, 0);
-    const total = questions.length;
-    const rate = correctCount / total;
-    progressBar.style.width = "100%";
-
-    let emoji = "📚";
-    let msg = "Ce n’est que le début! Continue de progresser! 🚀";
-    if (rate === 1) {
-      emoji = "🎉";
-      msg = "Bravo, score parfait ! Tu es le boss d'Excel ! 🥳";
-    } else if (rate >= 0.7) {
-      emoji = "👏";
-      msg = "Beau boulot ! Tu maîtrises bien le sujet ! 💪";
-    } else if (rate >= 0.5) {
-      emoji = "🙂";
-      msg = "Pas mal, mais tu peux faire encore mieux ! 🤗";
-    }
-
-    scoreEl.innerHTML = `<span class="score-emoji">${emoji}</span> <span>Score final : ${correctCount} / ${total}</span>`;
-    funMsgEl.textContent = msg;
-
-    const retryBtn = document.createElement("button");
-    retryBtn.id = "retryBtn";
-    retryBtn.textContent = "Recommencer le quiz";
-    retryBtn.style.margin = "22px auto 0 auto";
-    retryBtn.style.background = "linear-gradient(90deg,#34e194 10%,#3582e8 80%)";
-    retryBtn.style.color = "#fff";
-    retryBtn.style.fontWeight = "bold";
-    retryBtn.style.fontSize = "1rem";
-    retryBtn.style.padding = "12px 0";
-    retryBtn.style.border = "none";
-    retryBtn.style.borderRadius = "8px";
-    retryBtn.style.cursor = "pointer";
-    retryBtn.style.display = "block";
-    retryBtn.style.maxWidth = "200px";
-
-    retryBtn.onclick = () => {
-      shuffleQuestionsChoices();
-      userChoices = Array(questions.length).fill(null);
-      currentQuestion = 0;
-      loadQuestion();
-      scoreEl.textContent = "";
-      funMsgEl.textContent = "";
-      explanationEl.style.display = "none";
-      retryBtn.remove();
-      nextBtn.style.display = "";
-      prevBtn.style.display = "";
-    };
-
-    funMsgEl.appendChild(retryBtn);
+    nextBtn.style.display = "";
+    prevBtn.style.display = "";
+}
+function endQuiz() {
+    let finalScore = userChoices.reduce((acc, val, idx)=> (val === questions[idx].answer ? acc+1 : acc),0);
+    questionEl.textContent = "Quiz terminé !";
+    choicesEl.innerHTML = "";
     nextBtn.style.display = "none";
     prevBtn.style.display = "none";
-    showExplanationBtn.style.display = "none";
-  }
-
-  nextBtn.addEventListener("click", () => {
-    if (userChoices[currentQuestion] === null || userChoices[currentQuestion] === undefined) return;
-    if (!answered) return;
-    if (currentQuestion < questions.length - 1) {
-      currentQuestion++;
-      loadQuestion();
-    } else {
-      showScore();
+    progressBar.style.width = "100%";
+    const rate = finalScore/questions.length;
+    const {emoji, msg} = emojiAndMsgForScore(rate);
+    scoreEl.innerHTML = `<span class="score-emoji">${emoji}</span> <span>Votre score : ${finalScore} / ${questions.length}</span>`;
+    funMsgEl.textContent = msg;
+    if(finalScore === questions.length) {
+        setTimeout(showFireworks, 350);
     }
-  });
-
-  prevBtn.addEventListener("click", () => {
-    if (currentQuestion > 0) {
-      currentQuestion--;
-      loadQuestion();
+    else {
+        const retryBtn = document.createElement('button');
+        retryBtn.textContent = "Recommencer le quiz";
+        retryBtn.id = "retryBtn";
+        retryBtn.onclick = function() {
+            shuffleQuestionsChoices();
+            userChoices = Array(questions.length).fill(null);
+            currentQuestion = 0;
+            loadQuestion();
+            scoreEl.textContent = "";
+            funMsgEl.textContent = "";
+        };
+        funMsgEl.appendChild(retryBtn);
     }
-  });
-
-  showExplanationBtn.addEventListener("click", () => {
-    showExplanation();
-  });
-
-  shuffleQuestionsChoices();
-  userChoices = Array(questionsOrig.length).fill(null);
-  loadQuestion();
+}
+nextBtn.addEventListener('click', () => {if(userChoices[currentQuestion] === null) return; if (currentQuestion < questions.length - 1) {currentQuestion++;loadQuestion();} else {endQuiz();}});
+prevBtn.addEventListener('click', () => {if (currentQuestion > 0) {currentQuestion--;loadQuestion();}});
+shuffleQuestionsChoices();
+userChoices = Array(questions.length).fill(null);
+loadQuestion();
 </script>
 </body>
 </html>
